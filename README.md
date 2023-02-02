@@ -25,7 +25,6 @@ docker exec -it challenge /bin/bash
 composer install
 php artisan migrate:fresh --seed
 ./clear-cache.sh
-./test.sh SimulateTest
 ```
 
 **Paso 6.** Ejecutamos los tests dentro del contenedor:
