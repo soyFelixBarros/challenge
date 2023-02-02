@@ -1,0 +1,46 @@
+version: "3"
+services:
+  server:
+    platform: linux/amd64
+    build:
+      context: ./tools/docker/runtimes/7.4
+      args:
+        WWWGROUP: '${WWWGROUP}'
+    container_name: challenge
+    hostname: challenge.vm
+    external_links:
+      - databases:mysql
+    environment:
+      VIRTUAL_HOST: challenge.vm
+      WWWUSER: '${WWWUSER}'
+      WWWGROUP: 1234
+    volumes:
+      - ./tools/docker/bash_aliases:/home/developer/.bash_aliases
+      - .:/var/www
+    networks:
+      default:
+        aliases:
+          - challenge.vm
+    expose:
+      - "80"
+      - "443"
+
+  database:
+    image: mysql:5.7
+    platform: linux/amd64
+    container_name: mysql
+    environment:
+      MYSQL_DATABASE: 'challenge'   
+      MYSQL_USER: 'local'
+      MYSQL_PASSWORD: 'local'      
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - './.mysql-data/db:/var/lib/mysql'
+
+networks:
+  default:
+      name: nginx-proxy
